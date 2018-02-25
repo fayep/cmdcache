@@ -1,6 +1,6 @@
 package main
 
-# vim: ts=2 sw=2 ai
+// vim: ts=2 sw=2 ai
 
 import (
 	"compress/gzip"
@@ -18,6 +18,7 @@ import (
 	"github.com/vmihailenco/msgpack"
 )
 
+// Exit struct is used to panic with an exit code
 type Exit struct{ Code int }
 
 // exit code handler
@@ -30,18 +31,21 @@ func handleExit() {
 	}
 }
 
+// BufRecord is how we shunt data around
 type BufRecord struct {
 	T   int
 	Id  int
 	Buf []byte
 }
 
+// Timestamped is the type for our timestamped stream
 type Timestamped struct {
 	t  time.Time
 	id int
 	ch chan BufRecord
 }
 
+// OpenTS is how we setup a Timestamped stream
 func OpenTS(id int, c chan BufRecord) *Timestamped {
 	return &Timestamped{time.Now(), id, c}
 }
@@ -210,7 +214,7 @@ func main() {
 				exitCode = status.ExitStatus()
 			}
 			// Did the user want to preserve error responses?
-			if !keepNeg {
+			if ! *keepNeg {
 				os.Remove(location)
 			}
 		}
