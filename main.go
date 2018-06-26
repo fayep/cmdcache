@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -112,6 +113,16 @@ func main() {
 	delayPtr := flag.Bool("delay", false, "'real time' display")
 	keepNeg := flag.Bool("ve", false, "cache non-zero exit codes")
 	flag.Parse()
+	if flag.NArg() == 0 {
+		fmt.Printf(`Usage: %s [options] command [arguments]
+Execute command with arguments and cache the output.
+Output is stored with timestamps and interleaved so that you can
+replay it again later.  Stdout and Stderr are preserved.
+Options:
+`, filepath.Base(os.Args[0]))
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
 	// These are just the barewords after any options so they are
 	// definitely the program and arguments to run.
 	args := flag.Args()
@@ -214,7 +225,7 @@ func main() {
 				exitCode = status.ExitStatus()
 			}
 			// Did the user want to preserve error responses?
-			if ! *keepNeg {
+			if !*keepNeg {
 				os.Remove(location)
 			}
 		}
